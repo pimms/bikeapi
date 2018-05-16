@@ -1,7 +1,5 @@
 package no.jstien.bikeapi.station;
 
-import com.sun.xml.internal.ws.developer.Serialization;
-
 import java.io.Serializable;
 
 public class Station implements Serializable {
