@@ -4,6 +4,24 @@ _(For the time being)_ a dumb wrapper around the public API provided by
 [Oslo Bysykkel](https://developer.oslobysykkel.no).
 
 
+## Initializing
+
+The first thing you need to do to host this application is to create a
+user account at [Oslo Bysykkel](https://developer.oslobysykkel.no) and
+generate an API key. Place the key inside
+`src/main/resources/api-identifier.properties` on the following format:
+
+```
+api.identifier=<blablablabla>
+```
+
+The app should crash spectacularly if you've failed this step, so you'll know
+when you've got it.
+
+Start the application from `no.jstien.bikeapi.Main#main`, and you're good to
+go.
+
+
 ## Methods
 
 ### /stations
@@ -75,3 +93,16 @@ Just as the other one, but only one.
 Behaves identically to `/stations/closest`, with the exception that it returns
 the closest station that has *at least* 1 available bike.
 
+##### Example URL
+`host.com/stations/closestWithBikes?lat=69.420&lon=10.69420`
+
+## Roadmap
+
+The long term goal of this API is to provide a back-end that will answer a suitable
+front-end the following questions:
+
+ - When are the bikes typically all gone in the morning?
+ - Where do I need to park my bike when I get downtown?
+
+To properly answer these questions, the API should probably be fitted with a
+TSDB of some sort.
