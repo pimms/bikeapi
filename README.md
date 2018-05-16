@@ -8,12 +8,8 @@ _(For the time being)_ a dumb wrapper around the public API provided by
 
 The first thing you need to do to host this application is to create a
 user account at [Oslo Bysykkel](https://developer.oslobysykkel.no) and
-generate an API key. Place the key inside
-`src/main/resources/api-identifier.properties` on the following format:
-
-```
-api.identifier=<blablablabla>
-```
+generate an API key. The key should be placed as an environmental variable
+under the name `OBS_API_SECRET`.
 
 The app should crash spectacularly if you've failed this step, so you'll know
 when you've got it.
