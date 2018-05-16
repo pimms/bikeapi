@@ -26,14 +26,14 @@ public class StationController {
         return stationRepository.getAllStations();
     }
 
-    @RequestMapping("/closest")
+    @RequestMapping("/stations/closest")
     public Station getClosest(@RequestParam(value="lat") double lat,
                               @RequestParam(value="lon") double lon) {
         Coordinate coord = new Coordinate(lat, lon);
         return stationRepository.getClosestStation(coord, false);
     }
 
-    @RequestMapping("/closestWithBikes")
+    @RequestMapping("/stations/closestWithBikes")
     public Station getClosestWithBikes(@RequestParam(value="lat") double lat,
                               @RequestParam(value="lon") double lon) {
         Coordinate coord = new Coordinate(lat, lon);
