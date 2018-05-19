@@ -10,11 +10,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class OpenTSDB implements TSDB {
     private static final Logger LOG = LogManager.getLogger();
@@ -22,13 +23,13 @@ public class OpenTSDB implements TSDB {
     private static final String TSDB_PUT_PATH = "/api/put";
 
     private String url;
-    private List<Datum> datums;
+    private ConcurrentLinkedQueue<Datum> datumsCache;
     private HttpClient httpClient;
 
     public OpenTSDB(String url, HttpClient httpClient) {
         LOG.info("OpenTSDB created with endpoint {}", url);
         this.url = url;
-        datums = Collections.synchronizedList(new ArrayList<>());
+        datumsCache = new ConcurrentLinkedQueue<>();
         this.httpClient = httpClient;
     }
 
@@ -37,15 +38,25 @@ public class OpenTSDB implements TSDB {
         return new DatumBuilder(metricName, this);
     }
 
-    @Override
-    public void addDatum(Datum datum) {
-        // datums.add(datum);
-        syncDatums(Collections.singletonList(datum));
+    @Scheduled(fixedRate = 10_000L, initialDelay = 10_000L)
+    private synchronized void flushDatumsCache() {
+        List<Datum> datums = new ArrayList<>();
+        while (!datumsCache.isEmpty()) {
+            datums.add(datumsCache.poll());
+        }
+
+        if (!datums.isEmpty()) {
+            syncDatums(datums);
+        }
     }
 
+    @Override
+    public void addDatum(Datum datum) {
+        datumsCache.add(datum);
+    }
 
     private void syncDatums(List<Datum> datums) {
-        LOG.info("Syncing {} datums", datums.size());
+        LOG.info("--> Syncing {} datums", datums.size());
         HttpPost post = new HttpPost(url + TSDB_PUT_PATH);
         post.setEntity(getPostBody(datums));
         executeHttpPost(post);
