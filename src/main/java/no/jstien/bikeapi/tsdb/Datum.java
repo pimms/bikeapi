@@ -6,17 +6,17 @@ import java.util.Map;
 
 public class Datum implements Serializable {
     private String metric;
-    private double value;
+    private long value;
     private long timestamp;
     private Map<String,String> tags = new HashMap<>();
 
-    public Datum(String metric, double value, long timestamp) {
+    public Datum(String metric, long value, long timestamp) {
         this.metric = metric;
         this.value = value;
         this.timestamp = timestamp;
     }
 
-    public Datum(String metric, double value) {
+    public Datum(String metric, long value) {
         this.metric = metric;
         this.value = value;
         this.timestamp = System.currentTimeMillis() / 1000L;
@@ -34,14 +34,14 @@ public class Datum implements Serializable {
         return timestamp;
     }
 
-    public double getValue() {
+    public long getValue() {
         return value;
     }
 
 
     @Override
     public String toString() {
-        return String.format("{metric:'%s', value:'%f', timestamp:'%d' tags:'%s'", metric, value, timestamp, tags.toString());
+        return String.format("{metric:'%s', value:'%d', timestamp:'%d' tags:'%s'", metric, value, timestamp, tags.toString());
     }
 }
 

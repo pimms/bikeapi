@@ -20,10 +20,10 @@ public class DatumBuilder {
     }
 
     public void addDatum(String ...tagValues) {
-        addDatum(1.0, tagValues);
+        addDatum(1L, tagValues);
     }
 
-    public void addDatum(double value, String ...tagValues) {
+    public void addDatum(long value, String ...tagValues) {
         verifyTagValues(tagKeys, tagValues);
 
         Datum datum = new Datum(metricName, value);
