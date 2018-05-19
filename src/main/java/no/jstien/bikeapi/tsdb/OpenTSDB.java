@@ -1,6 +1,7 @@
 package no.jstien.bikeapi.tsdb;
 
 import com.google.gson.Gson;
+import no.jstien.bikeapi.utils.ListUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -22,6 +23,9 @@ public class OpenTSDB implements TSDB {
 
     private static final String TSDB_PUT_PATH = "/api/put";
 
+    // As per OpenTSDB's recommendations, limit the number of datums per request to 50.
+    private static final int MAX_DATUMS_PER_REQUEST = 50;
+
     private String url;
     private ConcurrentLinkedQueue<Datum> datumsCache;
     private HttpClient httpClient;
@@ -38,7 +42,8 @@ public class OpenTSDB implements TSDB {
         return new DatumBuilder(metricName, this);
     }
 
-    @Scheduled(fixedRate = 10_000L, initialDelay = 10_000L)
+    @Scheduled(fixedRateString = "${tsdb.sync-interval}",
+            initialDelayString = "${tsdb.sync-interval}")
     private synchronized void flushDatumsCache() {
         List<Datum> datums = new ArrayList<>();
         while (!datumsCache.isEmpty()) {
@@ -57,9 +62,13 @@ public class OpenTSDB implements TSDB {
 
     private void syncDatums(List<Datum> datums) {
         LOG.info("--> Syncing {} datums", datums.size());
-        HttpPost post = new HttpPost(url + TSDB_PUT_PATH);
-        post.setEntity(getPostBody(datums));
-        executeHttpPost(post);
+
+        ListUtils.processBatchwise(datums, MAX_DATUMS_PER_REQUEST, subList -> {
+            LOG.debug("Sending datum subset with {} datums", subList.size());
+            HttpPost post = new HttpPost(url + TSDB_PUT_PATH);
+            post.setEntity(getPostBody(subList));
+            executeHttpPost(post);
+        });
     }
 
     private StringEntity getPostBody(List<Datum> datums) {

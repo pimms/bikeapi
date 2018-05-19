@@ -4,11 +4,8 @@ import no.jstien.bikeapi.station.api.BikeAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StationRepositoryImpl implements StationRepository {
@@ -59,7 +56,8 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
 
-    @Scheduled(fixedRate = 30_000L, initialDelay = 30_000L)
+    @Scheduled(fixedRateString = "${station.refresh.poll-interval}",
+            initialDelayString = "${station.refresh.poll-interval}")
     private void updateAvailability() {
         LOG.info("--> Updating station availability");
         List<StationAvailability> stationAvailabiliy = bikeAPI.getAvailabilities();

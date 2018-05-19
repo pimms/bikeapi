@@ -3,6 +3,7 @@ package no.jstien.bikeapi;
 import no.jstien.bikeapi.requests.HeaderInterceptor;
 import no.jstien.bikeapi.station.StationRepository;
 import no.jstien.bikeapi.station.StationRepositoryImpl;
+import no.jstien.bikeapi.station.StationTSDBUpdater;
 import no.jstien.bikeapi.station.api.BikeAPI;
 import no.jstien.bikeapi.station.api.BikeAPIImpl;
 import no.jstien.bikeapi.tsdb.DevNullTSDB;
@@ -44,7 +45,7 @@ public class JavaConfig {
     }
 
     @Bean
-    public StationRepository stationDAO(BikeAPI bikeAPI) {
+    public StationRepository stationRepository(BikeAPI bikeAPI) {
         return new StationRepositoryImpl(bikeAPI);
     }
 
@@ -68,6 +69,12 @@ public class JavaConfig {
         }
 
         return new OpenTSDB(tsdbUrl, httpClient);
+    }
+
+    @Bean
+    @Autowired
+    public StationTSDBUpdater stationTSDBUpdater(StationRepository stationRepository, TSDB tsdb) {
+        return new StationTSDBUpdater(stationRepository, tsdb);
     }
 
 }
