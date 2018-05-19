@@ -5,6 +5,8 @@ import no.jstien.bikeapi.station.StationRepository;
 import no.jstien.bikeapi.station.StationRepositoryImpl;
 import no.jstien.bikeapi.station.api.BikeAPI;
 import no.jstien.bikeapi.station.api.BikeAPIImpl;
+import no.jstien.bikeapi.tsdb.OpenTSDB;
+import no.jstien.bikeapi.tsdb.TSDB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,4 +43,10 @@ public class JavaConfig {
     public BikeAPI bikeAPI(RestTemplate restTemplate) {
         return new BikeAPIImpl(restTemplate);
     }
+
+    @Bean
+    public TSDB tsdb() {
+        return new OpenTSDB();
+    }
+
 }
