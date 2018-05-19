@@ -8,7 +8,7 @@ _(For the time being)_ a dumb wrapper around the public API provided by
 ##### API Identifier
 The first thing you need to do to host this application is to create a
 user account at [Oslo Bysykkel](https://developer.oslobysykkel.no) and
-generate an API key. The key should be placed as an environmental variable
+generate an API key. The key should be placed as a VM-variable
 under the name `OBS_API_SECRET`.
 
 The app should crash spectacularly if you've failed this step, so you'll know
@@ -16,6 +16,14 @@ when you've got it.
 
 Start the application from `no.jstien.bikeapi.Main#main`, and you're good to
 go.
+
+##### OpenTSDB
+If you want to run with OpenTSDB, you need to specifiy the URL on which it can
+be reached in the VM-variable `TSDB_URL`. It should be on the form
+`http://host:port`. Keep in mind that BikeAPI will only ever use the HTTP-API.
+
+If you want to disable TSDB, set the VM-variable `BIKEAPI_NO_TSDB`
+to `1`.
 
 ## Methods
 ### /stations

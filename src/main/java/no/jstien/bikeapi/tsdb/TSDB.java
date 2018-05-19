@@ -4,3 +4,4 @@ public interface TSDB {
     DatumBuilder createDatumBuilder(String metricName);
     void addDatum(Datum datum);
 }
+
