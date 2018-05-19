@@ -5,7 +5,7 @@ _(For the time being)_ a dumb wrapper around the public API provided by
 
 
 ## Initializing
-
+##### API Identifier
 The first thing you need to do to host this application is to create a
 user account at [Oslo Bysykkel](https://developer.oslobysykkel.no) and
 generate an API key. The key should be placed as an environmental variable
@@ -17,11 +17,8 @@ when you've got it.
 Start the application from `no.jstien.bikeapi.Main#main`, and you're good to
 go.
 
-
 ## Methods
-
 ### /stations
-
 Returns all stations with the current bike/lock status.
 
 ##### Example URL
@@ -58,9 +55,7 @@ Returns all stations with the current bike/lock status.
 ]
 ```
 
-
 ### /stations/closest
-
 Returns the closest station to a given geographical location, regardless of
 current bike status.
 
@@ -85,7 +80,6 @@ Just as the other one, but only one.
 ```
 
 ### /stations/closestWithBikes
-
 Behaves identically to `/stations/closest`, with the exception that it returns
 the closest station that has *at least* 1 available bike.
 
@@ -93,7 +87,6 @@ the closest station that has *at least* 1 available bike.
 `host.com/stations/closestWithBikes?lat=69.420&lon=10.69420`
 
 ## Roadmap
-
 The long term goal of this API is to provide a back-end that will answer a suitable
 front-end the following questions:
 
