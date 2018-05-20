@@ -9,6 +9,7 @@ import no.jstien.bikeapi.station.api.BikeAPIImpl;
 import no.jstien.bikeapi.tsdb.DevNullTSDB;
 import no.jstien.bikeapi.tsdb.OpenTSDB;
 import no.jstien.bikeapi.tsdb.TSDB;
+import no.jstien.bikeapi.utils.VarUtils;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -57,13 +58,13 @@ public class JavaConfig {
     @Bean
     @Autowired
     public TSDB tsdb(HttpClient httpClient) {
-        String noTsdb = System.getProperty("BIKEAPI_NO_TSDB");
+        String noTsdb = VarUtils.getEnv("BIKEAPI_NO_TSDB");
         if (noTsdb != null && noTsdb.equals("1")) {
             LOG.info("$BIKEAPI_NO_TSDB is 1 - using DevNullTSDB");
             return new DevNullTSDB();
         }
 
-        String tsdbUrl = System.getProperty("TSDB_URL");
+        String tsdbUrl = VarUtils.getEnv("TSDB_URL");
         if (tsdbUrl == null) {
             throw new NullPointerException("envvar '$TSDB_URL' is undefined");
         }

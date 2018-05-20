@@ -45,4 +45,9 @@ public class StationController {
         Coordinate coord = new Coordinate(lat, lon);
         return stationRepository.getClosestStation(coord, true);
     }
+
+    @RequestMapping("/")
+    public String test() {
+        return "<html><body><h1>BikeAPI</h1><p>See https://github.com/pimms/bikeapi</p></body></html>";
+    }
 }
