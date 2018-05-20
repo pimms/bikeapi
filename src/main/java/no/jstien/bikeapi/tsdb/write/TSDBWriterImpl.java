@@ -2,6 +2,7 @@ package no.jstien.bikeapi.tsdb.write;
 
 import com.google.gson.Gson;
 import no.jstien.bikeapi.tsdb.Datum;
+import no.jstien.bikeapi.tsdb.OpenTSDBPaths;
 import no.jstien.bikeapi.utils.ListUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,8 +22,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TSDBWriterImpl implements TSDBWriter {
     private static final Logger LOG = LogManager.getLogger();
-
-    private static final String TSDB_PUT_PATH = "/api/put";
 
     // As per OpenTSDB's recommendations, limit the number of datums per request to 50.
     private static final int MAX_DATUMS_PER_REQUEST = 50;
@@ -66,7 +65,7 @@ public class TSDBWriterImpl implements TSDBWriter {
 
         ListUtils.processBatchwise(datums, MAX_DATUMS_PER_REQUEST, subList -> {
             LOG.debug("Sending datum subset with {} datums", subList.size());
-            HttpPost post = new HttpPost(url + TSDB_PUT_PATH);
+            HttpPost post = new HttpPost(url + OpenTSDBPaths.PUT_PATH);
             post.setEntity(getPostBody(subList));
             executeHttpPost(post);
         });
