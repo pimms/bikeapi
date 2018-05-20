@@ -1,6 +1,7 @@
 package no.jstien.bikeapi.tsdb;
 
 import com.google.gson.Gson;
+import no.jstien.bikeapi.tsdb.Datum;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

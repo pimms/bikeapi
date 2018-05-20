@@ -1,4 +1,6 @@
-package no.jstien.bikeapi.tsdb;
+package no.jstien.bikeapi.tsdb.write;
+
+import no.jstien.bikeapi.tsdb.Datum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +8,12 @@ import java.util.List;
 public class DatumBuilder {
     private String metricName;
     private List<String> tagKeys = new ArrayList<>();
-    private TSDB tsdb;
+    private TSDBWriter tsdbWriter;
 
 
-    public DatumBuilder(String metricName, TSDB tsdb) {
+    public DatumBuilder(String metricName, TSDBWriter tsdbWriter) {
         this.metricName = metricName;
-        this.tsdb = tsdb;
+        this.tsdbWriter = tsdbWriter;
     }
 
     public DatumBuilder addTagKey(String tagKey) {
@@ -31,7 +33,7 @@ public class DatumBuilder {
             datum.addTag(tagKeys.get(i), tagValues[i]);
         }
 
-        tsdb.addDatum(datum);
+        tsdbWriter.addDatum(datum);
     }
 
 

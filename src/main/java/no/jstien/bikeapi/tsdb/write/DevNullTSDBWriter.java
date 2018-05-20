@@ -1,9 +1,10 @@
-package no.jstien.bikeapi.tsdb;
+package no.jstien.bikeapi.tsdb.write;
 
+import no.jstien.bikeapi.tsdb.Datum;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DevNullTSDB implements TSDB {
+public class DevNullTSDBWriter implements TSDBWriter {
     Logger LOG = LogManager.getLogger();
 
     @Override
@@ -13,6 +14,6 @@ public class DevNullTSDB implements TSDB {
 
     @Override
     public void addDatum(Datum datum) {
-        LOG.trace("DevNullTSDB -> discarding datum");
+        LOG.trace("DevNullTSDBWriter -> discarding datum");
     }
 }

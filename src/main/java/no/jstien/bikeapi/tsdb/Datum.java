@@ -22,7 +22,7 @@ public class Datum implements Serializable {
         this.timestamp = System.currentTimeMillis() / 1000L;
     }
 
-    void addTag(String key, String value) {
+    public void addTag(String key, String value) {
         tags.put(key, value);
     }
 

@@ -6,9 +6,9 @@ import no.jstien.bikeapi.station.StationRepositoryImpl;
 import no.jstien.bikeapi.station.StationTSDBUpdater;
 import no.jstien.bikeapi.station.api.BikeAPI;
 import no.jstien.bikeapi.station.api.BikeAPIImpl;
-import no.jstien.bikeapi.tsdb.DevNullTSDB;
-import no.jstien.bikeapi.tsdb.OpenTSDB;
-import no.jstien.bikeapi.tsdb.TSDB;
+import no.jstien.bikeapi.tsdb.write.DevNullTSDBWriter;
+import no.jstien.bikeapi.tsdb.write.TSDBWriterImpl;
+import no.jstien.bikeapi.tsdb.write.TSDBWriter;
 import no.jstien.bikeapi.utils.VarUtils;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -57,11 +57,11 @@ public class JavaConfig {
 
     @Bean
     @Autowired
-    public TSDB tsdb(HttpClient httpClient) {
-        String noTsdb = VarUtils.getEnv("BIKEAPI_NO_TSDB");
+    public TSDBWriter tsdbWriter(HttpClient httpClient) {
+        String noTsdb = VarUtils.getEnv("TSDB_NO_WRITE");
         if (noTsdb != null && noTsdb.equals("1")) {
-            LOG.info("$BIKEAPI_NO_TSDB is 1 - using DevNullTSDB");
-            return new DevNullTSDB();
+            LOG.info("$TSDB_NO_WRITE is 1 - using DevNullTSDBWriter");
+            return new DevNullTSDBWriter();
         }
 
         String tsdbUrl = VarUtils.getEnv("TSDB_URL");
@@ -69,13 +69,13 @@ public class JavaConfig {
             throw new NullPointerException("envvar '$TSDB_URL' is undefined");
         }
 
-        return new OpenTSDB(tsdbUrl, httpClient);
+        return new TSDBWriterImpl(tsdbUrl, httpClient);
     }
 
     @Bean
     @Autowired
-    public StationTSDBUpdater stationTSDBUpdater(StationRepository stationRepository, TSDB tsdb) {
-        return new StationTSDBUpdater(stationRepository, tsdb);
+    public StationTSDBUpdater stationTSDBUpdater(StationRepository stationRepository, TSDBWriter tsdbWriter) {
+        return new StationTSDBUpdater(stationRepository, tsdbWriter);
     }
 
 }

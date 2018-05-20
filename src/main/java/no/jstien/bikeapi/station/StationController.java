@@ -1,7 +1,7 @@
 package no.jstien.bikeapi.station;
 
-import no.jstien.bikeapi.tsdb.DatumBuilder;
-import no.jstien.bikeapi.tsdb.TSDB;
+import no.jstien.bikeapi.tsdb.write.DatumBuilder;
+import no.jstien.bikeapi.tsdb.write.TSDBWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +19,9 @@ public class StationController {
     private DatumBuilder httpCallMetric;
 
     @Autowired
-    public StationController(StationRepository stationRepository, TSDB tsdb) {
+    public StationController(StationRepository stationRepository, TSDBWriter tsdbWriter) {
         this.stationRepository = stationRepository;
-        httpCallMetric = tsdb.createDatumBuilder("http_calls").addTagKey("endpoint").addTagKey("method");
+        httpCallMetric = tsdbWriter.createDatumBuilder("http_calls").addTagKey("endpoint").addTagKey("method");
     }
 
     @RequestMapping("/stations")

@@ -22,8 +22,12 @@ If you want to run with OpenTSDB, you need to specifiy the URL on which it can
 be reached in the VM-variable `TSDB_URL`. It should be on the form
 `http://host:port`. Keep in mind that BikeAPI will only ever use the HTTP-API.
 
-If you want to disable TSDB, set the VM-variable `BIKEAPI_NO_TSDB`
-to `1`.
+If you want BikeAPI to never **send** data to OpenTSDB, define the environment
+or VM variable `TSDB_NO_WRITE`. A dummy-object that discards all datums will
+be used in place of an actual `TSDBWriter`-instance.
+
+If you want BikeAPI to never **read** TSDB data, define the environment or VM
+variable `TSDB_NO_READ`. It will always return empty data sets.
 
 ## Methods
 ### /stations

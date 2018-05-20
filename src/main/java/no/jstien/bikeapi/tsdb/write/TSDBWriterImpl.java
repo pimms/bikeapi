@@ -1,6 +1,7 @@
-package no.jstien.bikeapi.tsdb;
+package no.jstien.bikeapi.tsdb.write;
 
 import com.google.gson.Gson;
+import no.jstien.bikeapi.tsdb.Datum;
 import no.jstien.bikeapi.utils.ListUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class OpenTSDB implements TSDB {
+public class TSDBWriterImpl implements TSDBWriter {
     private static final Logger LOG = LogManager.getLogger();
 
     private static final String TSDB_PUT_PATH = "/api/put";
@@ -30,8 +31,8 @@ public class OpenTSDB implements TSDB {
     private ConcurrentLinkedQueue<Datum> datumsCache;
     private HttpClient httpClient;
 
-    public OpenTSDB(String url, HttpClient httpClient) {
-        LOG.info("OpenTSDB created with endpoint {}", url);
+    public TSDBWriterImpl(String url, HttpClient httpClient) {
+        LOG.info("TSDBWriterImpl created with endpoint {}", url);
         this.url = url;
         datumsCache = new ConcurrentLinkedQueue<>();
         this.httpClient = httpClient;
