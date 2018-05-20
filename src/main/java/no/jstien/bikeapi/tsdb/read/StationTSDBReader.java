@@ -1,10 +1,9 @@
 package no.jstien.bikeapi.tsdb.read;
 
-import no.jstien.bikeapi.tsdb.Datum;
-
 import java.time.ZonedDateTime;
-import java.util.List;
+import java.util.Map;
 
 public interface StationTSDBReader {
-    List<Datum> queryStation(ZonedDateTime from, ZonedDateTime to, int ...stationIds);
+    StationHistory queryStation(ZonedDateTime from, ZonedDateTime to, int stationId);
+    Map<Integer,StationHistory> queryStations(ZonedDateTime from, ZonedDateTime to, int ...stationIds);
 }

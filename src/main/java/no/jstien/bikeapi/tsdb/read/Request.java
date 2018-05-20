@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Request {
@@ -24,5 +25,9 @@ public class Request {
     public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+    public List<Query> getQueries() {
+        return Collections.unmodifiableList(queries);
     }
 }

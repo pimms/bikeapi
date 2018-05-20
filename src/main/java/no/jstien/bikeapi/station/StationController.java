@@ -1,5 +1,6 @@
 package no.jstien.bikeapi.station;
 
+import no.jstien.bikeapi.tsdb.read.StationHistory;
 import no.jstien.bikeapi.tsdb.read.StationTSDBReader;
 import no.jstien.bikeapi.tsdb.write.DatumBuilder;
 import no.jstien.bikeapi.tsdb.write.TSDBWriter;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class StationController {
@@ -51,9 +54,10 @@ public class StationController {
     }
 
     @RequestMapping("/tsdb")
-    public String what() {
-        tsdbReader.queryStation(ZonedDateTime.now().minusHours(2), ZonedDateTime.now(), 272, 188);
-        return "ok pls";
+    public Collection<StationHistory> what() {
+        Map<Integer,StationHistory> historyMap;
+        historyMap = tsdbReader.queryStations(ZonedDateTime.now().minusHours(2), ZonedDateTime.now(), 272, 188);
+        return historyMap.values();
     }
 
     @RequestMapping("/")

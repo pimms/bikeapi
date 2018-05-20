@@ -1,14 +1,17 @@
 package no.jstien.bikeapi.tsdb.read;
 
-import no.jstien.bikeapi.tsdb.Datum;
-
 import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
 public class DevNullStationTSDBReader implements StationTSDBReader {
     @Override
-    public List<Datum> queryStation(ZonedDateTime from, ZonedDateTime to, int... stationIds) {
-        return Collections.emptyList();
+    public StationHistory queryStation(ZonedDateTime from, ZonedDateTime to, int stationId) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer,StationHistory> queryStations(ZonedDateTime from, ZonedDateTime to, int... stationIds) {
+        return Collections.emptyMap();
     }
 }

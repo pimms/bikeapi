@@ -1,7 +1,6 @@
 package no.jstien.bikeapi.tsdb.write;
 
 import com.google.gson.Gson;
-import no.jstien.bikeapi.tsdb.Datum;
 import no.jstien.bikeapi.tsdb.OpenTSDBPaths;
 import no.jstien.bikeapi.utils.ListUtils;
 import org.apache.http.HttpEntity;

@@ -1,7 +1,5 @@
 package no.jstien.bikeapi.tsdb.write;
 
-import no.jstien.bikeapi.tsdb.Datum;
-
 import java.util.ArrayList;
 import java.util.List;
 

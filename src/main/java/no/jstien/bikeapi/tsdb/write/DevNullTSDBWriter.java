@@ -1,6 +1,5 @@
 package no.jstien.bikeapi.tsdb.write;
 
-import no.jstien.bikeapi.tsdb.Datum;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
