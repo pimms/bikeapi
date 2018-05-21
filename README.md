@@ -114,7 +114,7 @@ Retrieve the history of one or more stations.
 > repeat the parameter *(e.g., `...&id=123&id=124`)*.
 
 > **dsm** *(OPTIONAL)*
-> The number of minutes to downsample the results by. Defaults to 1.
+> The number of minutes to downsample the results by. Leave undefined for raw data.
 
 ##### Example URL
 

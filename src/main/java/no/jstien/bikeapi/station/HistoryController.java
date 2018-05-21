@@ -40,7 +40,7 @@ public class HistoryController {
             @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime from,
             @RequestParam("to")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime to,
             @RequestParam("id") int[] stationIds,
-            @RequestParam(value="dsm", defaultValue = "1") int downsampleMinutes)
+            @RequestParam(value="dsm", defaultValue = "0") int downsampleMinutes)
     {
         httpCallMetric.addDatum("history_controller", "/history");
 
@@ -56,7 +56,10 @@ public class HistoryController {
 
         try {
             RequestFactory requestFactory = new RequestFactory(from, to, stationIds);
-            requestFactory.setDownsampleMinutes(downsampleMinutes);
+
+            if (downsampleMinutes > 0)
+                requestFactory.setDownsampleMinutes(downsampleMinutes);
+
             return tsdbReader.queryStations(requestFactory).values();
         } catch (TSDBException e) {
             LOG.info("/history call failed (TSDB): " + e.getMessage());
