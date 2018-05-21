@@ -13,7 +13,7 @@ public class TimeSerieJsonDeserializer implements JsonDeserializer<TimeSerie> {
 
         jsonObject.keySet().forEach(key -> {
             long timestamp = Long.valueOf(key);
-            long value = jsonObject.get(key).getAsLong();
+            double value = jsonObject.get(key).getAsDouble();
             DataPoint dp = new DataPoint(timestamp, value);
             timeSerie.addDataPoint(dp);
         });

@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DataPoint {
     private long timestamp;
-    private long value;
+    private double value;
 
-    public DataPoint(long timestamp, long value) {
+    public DataPoint(long timestamp, double value) {
         this.timestamp = timestamp;
         this.value = value;
     }
@@ -17,7 +17,7 @@ public class DataPoint {
     }
 
     @JsonProperty("val")
-    public long getValue() {
+    public double getValue() {
         return value;
     }
 }
