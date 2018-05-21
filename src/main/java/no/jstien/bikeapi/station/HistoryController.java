@@ -54,13 +54,9 @@ public class HistoryController {
             throw new RuntimeException("Cannot query for more than 4 stations at a time");
         }
 
-        if (downsampleMinutes < 1) {
-            response.setStatus(400);
-            throw new RuntimeException("Invalid value for 'dsm' - must be a positive value.");
-        }
-
         try {
             RequestFactory requestFactory = new RequestFactory(from, to, stationIds);
+            requestFactory.setDownsampleMinutes(downsampleMinutes);
             return tsdbReader.queryStations(requestFactory).values();
         } catch (TSDBException e) {
             LOG.info("/history call failed (TSDB): " + e.getMessage());
