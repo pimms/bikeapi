@@ -14,6 +14,7 @@ public class RequestFactory {
         this.from = from;
         this.to = to;
         this.stationIds = stationIds;
+        this.downsample = Optional.empty();
     }
 
     public void setDownsampleMinutes(int minutes) {
