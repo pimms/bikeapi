@@ -34,7 +34,7 @@ public class HistoryController {
         this.httpCallMetric = tsdbWriter.createDatumBuilder("http_calls").addTagKey("endpoint").addTagKey("method");
     }
 
-    @RequestMapping("/history")
+    @RequestMapping("/stations/history")
     public Collection<StationHistory> what(
             HttpServletResponse response,
             @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime from,
@@ -49,7 +49,7 @@ public class HistoryController {
             throw new RuntimeException("Cannot query intervals larger than 30 hours");
         }
 
-        if (stationIds.length > 4) {
+        if (stationIds.length > 5) {
             response.setStatus(400);
             throw new RuntimeException("Cannot query for more than 4 stations at a time");
         }

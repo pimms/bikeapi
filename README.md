@@ -98,6 +98,33 @@ the closest station that has *at least* 1 available bike.
 ##### Example URL
 `host.com/stations/closestWithBikes?lat=69.420&lon=10.69420`
 
+
+### /stations/history
+Retrieve the history of one or more stations.
+
+##### Parameters:
+> **from**
+> The start of the queried range, on ISO-8601 UTC format
+
+> **to**
+> The end of the queried range, on ISO-8601 UTC format
+
+> **id**
+> The station(s) to query. If you want data from more than one station,
+> repeat the parameter *(e.g., `...&id=123&id=124`)*.
+
+> **dsm** *(OPTIONAL)*
+> The number of minutes to downsample the results by. Defaults to 1.
+
+##### Example URL
+
+`host.com/stations/history?from=2018-05-20T13:00:00.000Z&to=2018-05-20T23:59:59.000Z&id=272&id=188&dsm=10`
+
+##### Gotchas
+ - Do note that **ALL** returned timestamps are in UTC.
+ - You cannot query for longer than 30 hours in a single query
+ - You cannot query for more than 5 stations in a single query
+
 ## Roadmap
 The long term goal of this API is to provide a back-end that will answer a suitable
 front-end the following questions:
