@@ -62,21 +62,23 @@ public class StationTSDBReaderImpl implements StationTSDBReader {
     private String executeRequest(Request request) {
         HttpPost httpPost = new HttpPost(url + OpenTSDBPaths.QUERY_PATH);
         String body = request.toJson();
+        LOG.info("oTSDB Query: {}", body);
         httpPost.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
         try {
             HttpResponse response = httpClient.execute(httpPost);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode < 200 || statusCode > 299) {
-                throw new RuntimeException("OpenTSDB server responded with " + statusCode);
+                throw new TSDBException("OpenTSDB server responded with " + statusCode, statusCode);
             }
 
             return EntityUtils.toString(response.getEntity(), "UTF-8");
+        } catch (TSDBException e) {
+            throw e;
         } catch (RuntimeException|IOException e) {
             throw new RuntimeException("Failed to query TSDB", e);
         }
     }
-
 
     private Map<Integer,StationHistory> parseResult(String json, int ...stationIds) {
         List<TSDBResponseDTO> dtoList = parseToResponseDTO(json);
@@ -97,8 +99,6 @@ public class StationTSDBReaderImpl implements StationTSDBReader {
             }
         });
 
-        verifyIntegrity(result, stationIds);
-
         return result;
     }
 
@@ -110,20 +110,4 @@ public class StationTSDBReaderImpl implements StationTSDBReader {
         return gson.fromJson(json, type);
     }
 
-    /**
-     * Ensures that all station IDs present in 'expectedStationIds' are present in 'resultMap', and that
-     * all such entries have a defined TimeSeries for bikes and locks. If not, raises a RuntimeException.
-     */
-    private void verifyIntegrity(Map<Integer,StationHistory> resultMap, int ...expectedStationIds) {
-        Arrays.stream(expectedStationIds).forEach(id -> {
-            if (!resultMap.containsKey(id))
-                throw new RuntimeException("Expected to find StationHistory for ID " + id);
-
-            StationHistory history = resultMap.get(id);
-            if (history.getFreeBikes() == null)
-                throw new RuntimeException("Found no bike-history for station with ID " + id);
-            if (history.getFreeLocks() == null)
-                throw new RuntimeException("Found no lock-history for statino with ID " + id);
-        });
-    }
 }

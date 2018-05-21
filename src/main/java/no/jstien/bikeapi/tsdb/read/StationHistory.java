@@ -7,6 +7,8 @@ public class StationHistory {
 
     StationHistory(int stationId) {
         this.stationId = stationId;
+        this.freeBikes = new TimeSerie();
+        this.freeBikes = new TimeSerie();
     }
 
     void setFreeBikes(TimeSerie freeBikes) {
