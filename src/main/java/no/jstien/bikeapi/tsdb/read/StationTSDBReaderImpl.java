@@ -15,8 +15,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StationTSDBReaderImpl implements StationTSDBReader {
     private static final Logger LOG = LogManager.getLogger();
@@ -30,33 +31,10 @@ public class StationTSDBReaderImpl implements StationTSDBReader {
     }
 
     @Override
-    public StationHistory queryStation(ZonedDateTime from, ZonedDateTime to, int stationId) {
-        Map<Integer,StationHistory> result = queryStations(from, to, stationId);
-
-        if (!result.containsKey(stationId))
-            throw new RuntimeException("Expected to find station in result map");
-
-        return result.get(stationId);
-    }
-
-    @Override
-    public Map<Integer,StationHistory> queryStations(ZonedDateTime from, ZonedDateTime to, int ...stationIds) {
-        Request request = new Request(from, to);
-        Arrays.stream(stationIds).forEach(id -> addQueries(request, id));
-
+    public Map<Integer,StationHistory> queryStations(RequestFactory requestFactory) {
+        Request request = requestFactory.create();
         String json = executeRequest(request);
-        return parseResult(json, stationIds);
-    }
-
-    private void addQueries(Request request, int stationId) {
-        Query bikeQuery = new Query("bikes.free");
-        bikeQuery.addFilter(Filter.literalOrFilter("stationId", false, String.valueOf(stationId)));
-
-        Query lockQuery = new Query("locks.free");
-        lockQuery.addFilter(Filter.literalOrFilter("stationId", false, String.valueOf(stationId)));
-
-        request.addQuery(bikeQuery);
-        request.addQuery(lockQuery);
+        return parseResult(json);
     }
 
     private String executeRequest(Request request) {
@@ -80,14 +58,16 @@ public class StationTSDBReaderImpl implements StationTSDBReader {
         }
     }
 
-    private Map<Integer,StationHistory> parseResult(String json, int ...stationIds) {
+    private Map<Integer,StationHistory> parseResult(String json) {
         List<TSDBResponseDTO> dtoList = parseToResponseDTO(json);
         Map<Integer,StationHistory> result = new HashMap<>();
 
-        Arrays.stream(stationIds).forEach(id -> result.put(id, new StationHistory(id)));
-
         dtoList.forEach(dto -> {
             int stationId = Integer.valueOf(dto.tags.get("stationId"));
+
+            if (!result.containsKey(stationId))
+                result.put(stationId, new StationHistory(stationId));
+
             StationHistory history = result.get(stationId);
 
             if (dto.metric.equals("bikes.free")) {

@@ -1,5 +1,6 @@
 package no.jstien.bikeapi.station;
 
+import no.jstien.bikeapi.tsdb.read.RequestFactory;
 import no.jstien.bikeapi.tsdb.read.StationHistory;
 import no.jstien.bikeapi.tsdb.read.StationTSDBReader;
 import no.jstien.bikeapi.tsdb.read.TSDBException;
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.Map;
 
 @RestController
 public class HistoryController {
@@ -42,6 +42,8 @@ public class HistoryController {
             @RequestParam("id") int[] stationIds,
             @RequestParam(value="dsm", defaultValue = "1") int downsampleMinutes)
     {
+        httpCallMetric.addDatum("history_controller", "/history");
+
         if (ChronoUnit.HOURS.between(from, to) > 30) {
             response.setStatus(400);
             throw new RuntimeException("Cannot query intervals larger than 30 hours");
@@ -58,10 +60,8 @@ public class HistoryController {
         }
 
         try {
-            httpCallMetric.addDatum("history_controller", "/history");
-            Map<Integer, StationHistory> historyMap;
-            historyMap = tsdbReader.queryStations(from, to, stationIds);
-            return historyMap.values();
+            RequestFactory requestFactory = new RequestFactory(from, to, stationIds);
+            return tsdbReader.queryStations(requestFactory).values();
         } catch (TSDBException e) {
             LOG.info("/history call failed (TSDB): " + e.getMessage());
             response.setStatus(e.getStatusCode());
