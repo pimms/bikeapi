@@ -120,6 +120,39 @@ Retrieve the history of one or more stations.
 
 `host.com/stations/history?from=2018-05-20T13:00:00.000Z&to=2018-05-20T23:59:59.000Z&id=272&id=188&dsm=10`
 
+##### Return format
+```
+[
+   {
+      "stationId" : 272,
+      "freeBikes" : {
+         "dataPoints" : [
+            {
+               "ts" : 1526821200,
+               "val" : 3
+            },
+            {
+               "ts" : 1526821800,
+               "val" : 2.05
+            }
+         ]
+      },
+      "freeLocks" : {
+         "dataPoints" : [
+            {
+               "ts" : 1526821200,
+               "val" : 7
+            },
+            {
+               "ts" : 1526821800,
+               "val" : 7.55
+            }
+         ]
+      }
+   }
+]
+```
+
 ##### Gotchas
  - Do note that **ALL** returned timestamps are in UTC.
  - You cannot query for longer than 30 hours in a single query
