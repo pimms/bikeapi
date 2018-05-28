@@ -6,6 +6,8 @@ import no.jstien.bikeapi.tsdb.read.StationTSDBReader;
 import no.jstien.bikeapi.tsdb.read.TSDBException;
 import no.jstien.bikeapi.tsdb.write.DatumBuilder;
 import no.jstien.bikeapi.tsdb.write.TSDBWriter;
+import no.jstien.bikeapi.utils.AnalogueDateFinder;
+import no.jstien.bikeapi.utils.HolidayRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +28,17 @@ public class HistoryController {
     private StationTSDBReader tsdbReader;
     private StationRepository stationRepository;
     private DatumBuilder httpCallMetric;
+    private HolidayRegistry holidayRegistry;
 
     @Autowired
-    public HistoryController(TSDBWriter tsdbWriter, StationRepository stationRepository, StationTSDBReader stationTSDBReader) {
+    public HistoryController(TSDBWriter tsdbWriter,
+                             StationRepository stationRepository,
+                             StationTSDBReader stationTSDBReader,
+                             HolidayRegistry holidayRegistry) {
         this.stationRepository = stationRepository;
         this.tsdbReader = stationTSDBReader;
         this.httpCallMetric = tsdbWriter.createDatumBuilder("http_calls").addTagKey("endpoint").addTagKey("method");
+        this.holidayRegistry = holidayRegistry;
     }
 
     @RequestMapping("/stations/history")
@@ -70,6 +77,23 @@ public class HistoryController {
         }
 
         return null;
+    }
+
+
+    @RequestMapping("/stations/prediction")
+    public String prediction(@RequestParam("id") int stationIds) {
+        httpCallMetric.addDatum("history_controller", "/prediction");
+
+        AnalogueDateFinder dateFinder = new AnalogueDateFinder(holidayRegistry);
+
+        StringBuilder sb = new StringBuilder();
+        String res = "";
+        dateFinder.findAnaloguesForToday().forEach(date -> {
+            sb.append(date.toString());
+            sb.append("<br/>");
+        });
+
+        return sb.toString();
     }
 
 }

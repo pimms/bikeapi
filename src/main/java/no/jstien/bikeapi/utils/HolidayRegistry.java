@@ -16,9 +16,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class HolidayRegistry {
     private static final Logger LOG = LogManager.getLogger();
@@ -27,15 +25,15 @@ public class HolidayRegistry {
     private static final String HOLIDAY_PATH = "/api/v1/holydays/";
 
     private static class Holiday {
-        private Date date;
+        private Calendar date;
         private String description;
 
-        public Holiday(Date date, String description) {
+        public Holiday(Calendar date, String description) {
             this.date = date;
             this.description = description;
         }
 
-        public Date getDate() {
+        public Calendar getDate() {
             return date;
         }
 
@@ -45,11 +43,18 @@ public class HolidayRegistry {
     }
 
     private HttpClient httpClient;
-    private List<Holiday> holidays;
+    private List<Holiday> holidays = Collections.emptyList();
 
     public HolidayRegistry(HttpClient httpClient) {
         this.httpClient = httpClient;
         refreshRegistry();
+    }
+
+    public boolean isHoliday(Calendar date) {
+        boolean result = holidays.stream()
+                .filter(h -> h.getDate().equals(date))
+                .count() > 0;
+        return result;
     }
 
 
@@ -97,7 +102,7 @@ public class HolidayRegistry {
 
 
         JsonArray data = root.get("data").getAsJsonArray();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-hh'T'HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
         List<Holiday> holidays = new ArrayList<>();
         data.forEach(ele -> {
@@ -106,7 +111,11 @@ public class HolidayRegistry {
             try {
                 String desc = obj.get("description").getAsString();
                 String dateStr = obj.get("date").getAsString();
-                Date date = dateFormat.parse(dateStr);
+
+                GregorianCalendar date = new GregorianCalendar();
+                date.setTime(dateFormat.parse(dateStr));
+                CalendarUtils.clearTime(date);
+
                 holidays.add(new Holiday(date, desc));
             } catch (Exception e) {
                 LOG.error("Failed to parse date", e);
