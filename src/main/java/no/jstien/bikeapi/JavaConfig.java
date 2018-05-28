@@ -10,8 +10,9 @@ import no.jstien.bikeapi.tsdb.read.DevNullStationTSDBReader;
 import no.jstien.bikeapi.tsdb.read.StationTSDBReader;
 import no.jstien.bikeapi.tsdb.read.StationTSDBReaderImpl;
 import no.jstien.bikeapi.tsdb.write.DevNullTSDBWriter;
-import no.jstien.bikeapi.tsdb.write.TSDBWriterImpl;
 import no.jstien.bikeapi.tsdb.write.TSDBWriter;
+import no.jstien.bikeapi.tsdb.write.TSDBWriterImpl;
+import no.jstien.bikeapi.utils.HolidayRegistry;
 import no.jstien.bikeapi.utils.VarUtils;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -97,4 +98,9 @@ public class JavaConfig {
         return new StationTSDBUpdater(stationRepository, tsdbWriter);
     }
 
+    @Bean
+    @Autowired
+    public HolidayRegistry holidayRegistry(HttpClient httpClient) {
+        return new HolidayRegistry(httpClient);
+    }
 }
