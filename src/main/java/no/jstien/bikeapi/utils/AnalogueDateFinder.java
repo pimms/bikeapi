@@ -1,5 +1,7 @@
 package no.jstien.bikeapi.utils;
 
+import no.jstien.bikeapi.utils.holiday.HolidayRegistry;
+
 import java.util.*;
 
 public class AnalogueDateFinder {

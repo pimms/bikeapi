@@ -7,7 +7,7 @@ import no.jstien.bikeapi.tsdb.read.TSDBException;
 import no.jstien.bikeapi.tsdb.write.DatumBuilder;
 import no.jstien.bikeapi.tsdb.write.TSDBWriter;
 import no.jstien.bikeapi.utils.AnalogueDateFinder;
-import no.jstien.bikeapi.utils.HolidayRegistry;
+import no.jstien.bikeapi.utils.holiday.HolidayRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

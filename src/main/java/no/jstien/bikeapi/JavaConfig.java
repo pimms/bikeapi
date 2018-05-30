@@ -12,8 +12,10 @@ import no.jstien.bikeapi.tsdb.read.StationTSDBReaderImpl;
 import no.jstien.bikeapi.tsdb.write.DevNullTSDBWriter;
 import no.jstien.bikeapi.tsdb.write.TSDBWriter;
 import no.jstien.bikeapi.tsdb.write.TSDBWriterImpl;
-import no.jstien.bikeapi.utils.HolidayRegistry;
 import no.jstien.bikeapi.utils.VarUtils;
+import no.jstien.bikeapi.utils.holiday.HolidayRegistry;
+import no.jstien.bikeapi.utils.holiday.HolidayRepository;
+import no.jstien.bikeapi.utils.holiday.HolidayRepositoryImpl;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -100,7 +102,13 @@ public class JavaConfig {
 
     @Bean
     @Autowired
-    public HolidayRegistry holidayRegistry(HttpClient httpClient) {
-        return new HolidayRegistry(httpClient);
+    public HolidayRepository holidayRepository(HttpClient httpClient) {
+        return new HolidayRepositoryImpl(httpClient);
+    }
+
+    @Bean
+    @Autowired
+    public HolidayRegistry holidayRegistry(HolidayRepository holidayRepository) {
+        return new HolidayRegistry(holidayRepository);
     }
 }
