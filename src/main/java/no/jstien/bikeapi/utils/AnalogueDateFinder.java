@@ -14,8 +14,11 @@ public class AnalogueDateFinder {
     public List<Calendar> findAnaloguesForToday() {
         Calendar anchor = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
         CalendarUtils.clearTime(anchor);
+        return findAnaloguesForDay(anchor);
+    }
 
-        return getCandidateDates(anchor);
+    public List<Calendar> findAnaloguesForDay(Calendar date) {
+        return getCandidateDates(date);
     }
 
     private List<Calendar> getCandidateDates(Calendar anchor) {

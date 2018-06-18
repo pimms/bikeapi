@@ -9,4 +9,8 @@ public class CalendarUtils {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
     }
+
+    public static String calendarToString(Calendar calendar) {
+        return calendar.toInstant().toString();
+    }
 }

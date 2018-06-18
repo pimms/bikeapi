@@ -42,7 +42,7 @@ public class HistoryController {
     }
 
     @RequestMapping("/stations/history")
-    public Collection<StationHistory> what(
+    public Collection<StationHistory> getStationHistory(
             HttpServletResponse response,
             @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime from,
             @RequestParam("to")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime to,
