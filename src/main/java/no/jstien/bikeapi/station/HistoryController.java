@@ -7,6 +7,7 @@ import no.jstien.bikeapi.tsdb.read.TSDBException;
 import no.jstien.bikeapi.tsdb.write.DatumBuilder;
 import no.jstien.bikeapi.tsdb.write.TSDBWriter;
 import no.jstien.bikeapi.utils.AnalogueDateFinder;
+import no.jstien.bikeapi.utils.CalendarUtils;
 import no.jstien.bikeapi.utils.holiday.HolidayRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,19 +82,12 @@ public class HistoryController {
 
 
     @RequestMapping("/stations/prediction")
-    public String prediction(@RequestParam("id") int stationIds) {
+    public StationHistory prediction(@RequestParam("id") int stationId) {
         httpCallMetric.addDatum("history_controller", "/prediction");
 
         AnalogueDateFinder dateFinder = new AnalogueDateFinder(holidayRegistry);
-
-        StringBuilder sb = new StringBuilder();
-        String res = "";
-        dateFinder.findAnaloguesForToday().forEach(date -> {
-            sb.append(date.toString());
-            sb.append("<br/>");
-        });
-
-        return sb.toString();
+        AvailabilityPredictor predictor = new AvailabilityPredictor(tsdbReader, dateFinder);
+        return predictor.predictForStation(stationId, CalendarUtils.currentDate());
     }
 
 }

@@ -5,10 +5,16 @@ public class StationHistory {
     private TimeSerie freeBikes;
     private TimeSerie freeLocks;
 
-    StationHistory(int stationId) {
+    public StationHistory(int stationId) {
         this.stationId = stationId;
         this.freeBikes = new TimeSerie();
         this.freeBikes = new TimeSerie();
+    }
+
+    public StationHistory(int stationId, TimeSerie freeBikes, TimeSerie freeLocks) {
+        this.stationId = stationId;
+        this.freeBikes = freeBikes;
+        this.freeLocks = freeLocks;
     }
 
     void setFreeBikes(TimeSerie freeBikes) {

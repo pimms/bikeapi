@@ -6,11 +6,11 @@ import java.util.List;
 public class TimeSerie {
     private List<DataPoint> values;
 
-    TimeSerie() {
+    public TimeSerie() {
         this.values = new ArrayList<>();
     }
 
-    void addDataPoint(DataPoint dataPoint) {
+    public void addDataPoint(DataPoint dataPoint) {
         this.values.add(dataPoint);
     }
 
