@@ -1,6 +1,6 @@
 package no.jstien.bikeapi;
 
-import no.jstien.bikeapi.requests.HeaderInterceptor;
+import no.jstien.bikeapi.requests.BysykkelAuthInterceptor;
 import no.jstien.bikeapi.station.StationRepository;
 import no.jstien.bikeapi.station.StationRepositoryImpl;
 import no.jstien.bikeapi.station.StationTSDBUpdater;
@@ -42,7 +42,7 @@ public class JavaConfig {
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setInterceptors(Collections.singletonList(new HeaderInterceptor(clientIdentifier)));
+        restTemplate.setInterceptors(Collections.singletonList(new BysykkelAuthInterceptor(clientIdentifier)));
         return restTemplate;
     }
 
