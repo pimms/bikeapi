@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 @RestController
 public class HistoryController {
@@ -95,7 +96,7 @@ public class HistoryController {
         AvailabilityPredictor predictor = new AvailabilityPredictor(tsdbReader, dateFinder);
         predictor.setDownsampleMinutes(downsampleMinutes);
 
-        return predictor.predictForStation(stationId, new GregorianCalendar());
+        return predictor.predictForStation(stationId, new GregorianCalendar(TimeZone.getTimeZone("ECT")));
     }
 
 }

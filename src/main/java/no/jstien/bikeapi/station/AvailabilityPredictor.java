@@ -43,16 +43,11 @@ public class AvailabilityPredictor {
         double[] locks = new double[numElems];
 
         analogues.forEach(day -> {
-            LOG.info("ANALOGUE RAW: {}", ((GregorianCalendar)day).toZonedDateTime().toString());
-
             GregorianCalendar startDate = CalendarUtils.startOfDay(day);
             ZonedDateTime from = startDate.toZonedDateTime();
             ZonedDateTime to = CalendarUtils.endOfDay(day).toZonedDateTime();
             RequestFactory requestFactory = new RequestFactory(from, to, stationId);
             requestFactory.setDownsampleMinutes(downsampleMinutes);
-
-            LOG.info("ANALOGUE From: {}", from.toString());
-            LOG.info("ANALOGUE To: {}", to.toString());
 
             final long startTime = startDate.getTimeInMillis() / 1000L;
             Map<Integer, StationHistory> history = tsdbReader.queryStations(requestFactory);
