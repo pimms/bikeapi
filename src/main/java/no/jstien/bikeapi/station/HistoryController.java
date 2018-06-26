@@ -7,7 +7,6 @@ import no.jstien.bikeapi.tsdb.read.TSDBException;
 import no.jstien.bikeapi.tsdb.write.DatumBuilder;
 import no.jstien.bikeapi.tsdb.write.TSDBWriter;
 import no.jstien.bikeapi.utils.AnalogueDateFinder;
-import no.jstien.bikeapi.utils.CalendarUtils;
 import no.jstien.bikeapi.utils.holiday.HolidayRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 
 @RestController
 public class HistoryController {
@@ -91,8 +91,11 @@ public class HistoryController {
         httpCallMetric.addDatum("history_controller", "/prediction");
 
         AnalogueDateFinder dateFinder = new AnalogueDateFinder(holidayRegistry);
+
         AvailabilityPredictor predictor = new AvailabilityPredictor(tsdbReader, dateFinder);
-        return predictor.predictForStation(stationId, CalendarUtils.currentDate());
+        predictor.setDownsampleMinutes(downsampleMinutes);
+
+        return predictor.predictForStation(stationId, new GregorianCalendar());
     }
 
 }

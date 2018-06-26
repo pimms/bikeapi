@@ -3,11 +3,18 @@ package no.jstien.bikeapi.station;
 import no.jstien.bikeapi.tsdb.read.*;
 import no.jstien.bikeapi.utils.AnalogueDateFinder;
 import no.jstien.bikeapi.utils.CalendarUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 public class AvailabilityPredictor {
+    private static final Logger LOG = LogManager.getLogger();
+
     private static final int MINUTES_PER_DAY = 60 * 24;
     private static final int DEFAULT_DOWNSAMPLE_MINUTES = 15;
 
@@ -36,14 +43,18 @@ public class AvailabilityPredictor {
         double[] locks = new double[numElems];
 
         analogues.forEach(day -> {
-            GregorianCalendar startDate = CalendarUtils.startOfDay(day);
-            final long startTime = startDate.getTimeInMillis() / 1000L;
+            LOG.info("ANALOGUE RAW: {}", ((GregorianCalendar)day).toZonedDateTime().toString());
 
+            GregorianCalendar startDate = CalendarUtils.startOfDay(day);
             ZonedDateTime from = startDate.toZonedDateTime();
             ZonedDateTime to = CalendarUtils.endOfDay(day).toZonedDateTime();
             RequestFactory requestFactory = new RequestFactory(from, to, stationId);
             requestFactory.setDownsampleMinutes(downsampleMinutes);
 
+            LOG.info("ANALOGUE From: {}", from.toString());
+            LOG.info("ANALOGUE To: {}", to.toString());
+
+            final long startTime = startDate.getTimeInMillis() / 1000L;
             Map<Integer, StationHistory> history = tsdbReader.queryStations(requestFactory);
             history.values().stream()
                 .forEach(h -> {
