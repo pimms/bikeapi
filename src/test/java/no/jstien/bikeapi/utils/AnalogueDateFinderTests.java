@@ -32,7 +32,7 @@ public class AnalogueDateFinderTests {
         weekday.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         List<Calendar> analogues = dateFinder.findAnaloguesForDay(weekday);
-        Assert.assertTrue(analogues.size() > 10);
+        Assert.assertTrue(analogues.size() >= AnalogueDateFinder.DEFAULT_MAX_ANALOGUE_HITS);
 
         analogues.forEach(day -> {
             int dayOfWeek = day.get(Calendar.DAY_OF_WEEK);

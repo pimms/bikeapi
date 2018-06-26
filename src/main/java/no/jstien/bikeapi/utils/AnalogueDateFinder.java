@@ -7,15 +7,17 @@ import java.util.*;
 import static no.jstien.bikeapi.utils.CalendarUtils.copyCalendar;
 
 public class AnalogueDateFinder {
+    public static final int DEFAULT_MAX_ANALOGUE_HITS = 5;
+
+    private int maxAnalogueHits = DEFAULT_MAX_ANALOGUE_HITS;
     private HolidayRegistry holidayRegistry;
-    private int maxReturnLimit = 30;
 
     public AnalogueDateFinder(HolidayRegistry holidayRegistry) {
         this.holidayRegistry = holidayRegistry;
     }
 
     public void setMaxReturnLimit(int maxLimit) {
-        this.maxReturnLimit = maxLimit;
+        this.maxAnalogueHits= maxLimit;
     }
 
     public List<Calendar> findAnaloguesForToday() {
@@ -34,7 +36,7 @@ public class AnalogueDateFinder {
         List<Calendar> candidates = new ArrayList<>();
 
         // Find up to five analogue dates, matching as much as possible
-        for (int i=0; i<30 && candidates.size() < maxReturnLimit; i++) {
+        for (int i = 0; i<30 && candidates.size() < maxAnalogueHits; i++) {
             iterator.add(Calendar.DAY_OF_MONTH, -1);
 
             if (isDateInWeekend(iterator) == isDateInWeekend(anchor) && !holidayRegistry.isHoliday(iterator))
