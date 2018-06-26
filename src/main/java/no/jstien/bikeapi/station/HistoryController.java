@@ -82,7 +82,12 @@ public class HistoryController {
 
 
     @RequestMapping("/stations/prediction")
-    public StationHistory prediction(@RequestParam("id") int stationId) {
+    public StationHistory prediction(@RequestParam("id") int stationId,
+                                     @RequestParam(value="dsm", defaultValue = "15") int downsampleMinutes) {
+        if (downsampleMinutes < 1 || downsampleMinutes > 60) {
+            throw new RuntimeException("dsm must be in the range [1..60]");
+        }
+
         httpCallMetric.addDatum("history_controller", "/prediction");
 
         AnalogueDateFinder dateFinder = new AnalogueDateFinder(holidayRegistry);

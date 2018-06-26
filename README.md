@@ -158,12 +158,31 @@ Retrieve the history of one or more stations.
  - You cannot query for longer than 30 hours in a single query
  - You cannot query for more than 5 stations in a single query
 
+
+### /stations/prediction
+Attempts to find the predicted availability for the current day,
+based on the last N days of similar type (weekday, weekend). Holidays
+are not yet taken into account. Not very good, but not entirely stupid
+either.
+
+##### Parameters:
+> **id**
+> The station to query.
+
+> **dsm**
+> The number of minutes to downsample the results by. Must be in the range
+> [1..60].
+
+##### Example URL
+
+`host.com/stations/prediction?id=188&dsm=15`
+
+##### Return format
+Identical to `/stations/history`.
+
 ## Roadmap
 The long term goal of this API is to provide a back-end that will answer a suitable
 front-end the following questions:
 
  - When are the bikes typically all gone in the morning?
  - Where do I need to park my bike when I get downtown?
-
-To properly answer these questions, the API should probably be fitted with a
-TSDB of some sort.

@@ -9,14 +9,19 @@ import java.util.*;
 
 public class AvailabilityPredictor {
     private static final int MINUTES_PER_DAY = 60 * 24;
-    private static final int DOWNSAMPLE_MINUTES = 15;
+    private static final int DEFAULT_DOWNSAMPLE_MINUTES = 15;
 
     private StationTSDBReader tsdbReader;
     private AnalogueDateFinder dateFinder;
+    private int downsampleMinutes = DEFAULT_DOWNSAMPLE_MINUTES;
 
     public AvailabilityPredictor(StationTSDBReader tsdbReader, AnalogueDateFinder analogueDateFinder) {
         this.tsdbReader = tsdbReader;
         this.dateFinder = analogueDateFinder;
+    }
+
+    public void setDownsampleMinutes(int minutes) {
+        this.downsampleMinutes = minutes;
     }
 
     public StationHistory predictForStation(int stationId, Calendar predictionDate) {
@@ -24,7 +29,7 @@ public class AvailabilityPredictor {
         // buggy AF. Anyways, it's an OK POC I guess.
         List<Calendar> analogues = dateFinder.findAnaloguesForDay(predictionDate);
 
-        final int numElems = MINUTES_PER_DAY / DOWNSAMPLE_MINUTES;
+        final int numElems = MINUTES_PER_DAY / downsampleMinutes;
         int[] bikesCount = new int[numElems];
         double[] bikes = new double[numElems];
         int[] locksCount = new int[numElems];
@@ -37,7 +42,7 @@ public class AvailabilityPredictor {
             ZonedDateTime from = startDate.toZonedDateTime();
             ZonedDateTime to = CalendarUtils.endOfDay(day).toZonedDateTime();
             RequestFactory requestFactory = new RequestFactory(from, to, stationId);
-            requestFactory.setDownsampleMinutes(DOWNSAMPLE_MINUTES);
+            requestFactory.setDownsampleMinutes(downsampleMinutes);
 
             Map<Integer, StationHistory> history = tsdbReader.queryStations(requestFactory);
             history.values().stream()
@@ -60,7 +65,7 @@ public class AvailabilityPredictor {
     private void processTimeSerie(TimeSerie timeSerie, long startTime, double[] dest, int[] counts) {
         timeSerie.getDataPoints().forEach(dp -> {
             final long timestamp = dp.getTimestamp();
-            final long index = (timestamp - startTime) / (DOWNSAMPLE_MINUTES * 60);
+            final long index = (timestamp - startTime) / (downsampleMinutes * 60);
             dest[(int)index] += dp.getValue();
             counts[(int)index]++;
         });
@@ -77,7 +82,7 @@ public class AvailabilityPredictor {
     private TimeSerie toTimeSerie(double[] vals, long firstTimeStamp) {
         TimeSerie ts = new TimeSerie();
 
-        final long deltaTime = (DOWNSAMPLE_MINUTES * 60);
+        final long deltaTime = (downsampleMinutes * 60);
         long time = firstTimeStamp;
         for (int i=0; i<vals.length; i++) {
             ts.addDataPoint(new DataPoint(time, vals[i]));
