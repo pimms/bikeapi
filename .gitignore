@@ -38,4 +38,3 @@ fabric.properties
 .idea/httpRequests
 
 dependency-reduced-pom.xml
-build-push.sh
