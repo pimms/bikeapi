@@ -9,11 +9,17 @@ import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.TimeZone
 
-import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class AnalogueDateFinderTests {
+    private fun <T> any(): T {
+        Mockito.any<T>()
+        return uninitialized()
+    }
+    private fun <T> uninitialized(): T = null as T
+
     private var dateFinder: AnalogueDateFinder? = null
     private var holidayRegistry: HolidayRegistry? = null
 
